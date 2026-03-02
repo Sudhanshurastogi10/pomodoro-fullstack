@@ -1,7 +1,7 @@
 // ===============================
 // API CONFIG
 // ===============================
-const API_BASE = "https://pomodoro-api-f6ku.onrender.com";
+const API_BASE = "https://pomodoro-fullstack-2s0n.onrender.com";
 
 // ===============================
 // AUTH SECTION
