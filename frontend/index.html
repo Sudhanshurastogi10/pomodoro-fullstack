@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'DM Sans', sans-serif; }
+    #timer { font-family: 'DM Serif Display', serif; letter-spacing: -2px; }
+
+    body {
+      background-color: #f5ede3;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 70% 10%, rgba(220,185,150,0.45) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 10% 90%, rgba(185,155,120,0.3) 0%, transparent 55%),
+        radial-gradient(circle, #c4a882 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 28px 28px;
+      transition: background-color 1.4s ease, background-image 1.4s ease;
+    }
+
+    body.timer-done {
+      background-color: #dff0e3;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 70% 10%, rgba(160,210,170,0.45) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 10% 90%, rgba(120,185,130,0.3) 0%, transparent 55%),
+        radial-gradient(circle, #a8cca8 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 28px 28px;
+    }
+
+    body.timer-done .glass {
+      border-color: rgba(180, 225, 185, 0.8);
+      box-shadow: 0 24px 64px rgba(80, 150, 90, 0.18) !important;
+    }
+
+    body.timer-done #startPause {
+      background-color: #3a7d4f;
+      box-shadow: 0 8px 24px rgba(40, 110, 60, 0.28) !important;
+    }
+
+    body.timer-done #startPause:hover { background-color: #2f6840; }
+
+    @keyframes glowPulse {
+      0%, 100% { text-shadow: 0 0 0px rgba(60,160,80,0); }
+      50%       { text-shadow: 0 0 32px rgba(60,160,80,0.35); }
+    }
+    body.timer-done #timer { animation: glowPulse 2s ease-in-out infinite; color: #2d6e40; }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 18px,
+        rgba(180,150,120,0.045) 18px,
+        rgba(180,150,120,0.045) 19px
+      );
+      z-index: 0;
+    }
+
+    .ring {
+      position: fixed;
+      border-radius: 50%;
+      border: 1.5px solid rgba(180, 148, 110, 0.18);
+      pointer-events: none;
+      animation: drift 18s ease-in-out infinite;
+    }
+    .ring-2 { animation-duration: 24s; animation-direction: reverse; border-color: rgba(160,130,95,0.12); }
+    .ring-3 { animation-duration: 30s; animation-delay: -8s; border-color: rgba(200,170,130,0.1); }
+
+    @keyframes drift {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33%       { transform: translate(12px, -18px) rotate(4deg); }
+      66%       { transform: translate(-10px, 10px) rotate(-3deg); }
+    }
+
+    .glass {
+      background: rgba(255,255,255,0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.8);
+      transition: border-color 1.4s ease, box-shadow 1.4s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    input::placeholder { color: #b5a99a; }
+    input:focus { outline: none; box-shadow: 0 0 0 2px #c9b8a8; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.6s ease both; }
+    .fade-up-delay { animation: fadeUp 0.6s 0.15s ease both; }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen px-4">
+
+  <!-- Floating decorative rings -->
+  <div class="ring"     style="width:420px;height:420px;top:-80px;right:-100px;"></div>
+  <div class="ring ring-2" style="width:280px;height:280px;bottom:40px;left:-60px;"></div>
+  <div class="ring ring-3" style="width:180px;height:180px;top:45%;left:12%;"></div>
+  <div class="ring ring-2" style="width:520px;height:520px;bottom:-160px;right:-140px;"></div>
+
+  <!-- Main card -->
+  <div class="glass rounded-3xl shadow-2xl w-full max-w-sm p-8 fade-up" style="box-shadow: 0 24px 64px rgba(150,120,90,0.18);">
+
+    <!-- Auth Section -->
+    <div id="authSection" class="mb-8">
+      <p class="text-xs font-500 tracking-widest uppercase text-stone-400 mb-5 text-center">Account</p>
+
+      <input id="email" type="email" placeholder="Email"
+             class="w-full bg-stone-100/70 border border-stone-200 text-stone-700 text-sm rounded-xl px-4 py-3 mb-3 block transition-all duration-200"
+             style="font-family: 'DM Sans', sans-serif;">
+
+      <input id="password" type="password" placeholder="Password"
+             class="w-full bg-stone-100/70 border border-stone-200 text-stone-700 text-sm rounded-xl px-4 py-3 mb-5 block transition-all duration-200"
+             style="font-family: 'DM Sans', sans-serif;">
+
+      <div class="flex gap-3">
+        <button id="signupBtn"
+                class="flex-1 bg-stone-700 hover:bg-stone-800 active:scale-95 text-white text-sm font-medium py-2.5 rounded-xl transition-all duration-200">
+          Sign up
+        </button>
+        <button id="loginBtn"
+                class="flex-1 bg-white hover:bg-stone-50 active:scale-95 text-stone-700 text-sm font-medium py-2.5 rounded-xl border border-stone-200 transition-all duration-200">
+          Log in
+        </button>
+      </div>
+
+      <p id="authMessage" class="mt-3 text-xs text-center text-stone-400"></p>
+
+      <!-- Divider -->
+      <div class="flex items-center gap-3 mt-6">
+        <div class="flex-1 h-px bg-stone-200"></div>
+        <span class="text-xs text-stone-300 tracking-widest uppercase">Focus</span>
+        <div class="flex-1 h-px bg-stone-200"></div>
+      </div>
+    </div>
+
+    <!-- Timer Section -->
+    <div class="text-center fade-up-delay">
+      <p class="text-xs tracking-widest uppercase text-stone-400 mb-2">Pomodoro</p>
+
+      <h1 id="timer"
+          class="text-8xl font-bold text-stone-800 mb-8 select-none transition-colors duration-700"
+          style="text-shadow: 0 2px 16px rgba(120,90,60,0.08);">
+        25:00
+      </h1>
+
+      <div class="flex justify-center gap-4">
+        <button id="startPause"
+                class="bg-stone-800 hover:bg-stone-900 active:scale-95 text-white text-sm font-medium px-8 py-3 rounded-2xl transition-all duration-700"
+                style="box-shadow: 0 8px 24px rgba(80,60,40,0.22);">
+          Start
+        </button>
+        <button id="reset"
+                class="bg-white hover:bg-stone-50 active:scale-95 text-stone-500 text-sm font-medium px-6 py-3 rounded-2xl border border-stone-200 transition-all duration-200">
+          Reset
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Watches #timer text; triggers green bg when it hits 00:00 -->
+  <script>
+    const timerEl = document.getElementById('timer');
+    const observer = new MutationObserver(() => {
+      if (timerEl.textContent.trim() === '00:00') {
+        document.body.classList.add('timer-done');
+      } else {
+        document.body.classList.remove('timer-done');
+      }
+    });
+    observer.observe(timerEl, { childList: true, subtree: true, characterData: true });
+  </script>
+
+  <script src="app.js"></script>
+</body>
+</html>
